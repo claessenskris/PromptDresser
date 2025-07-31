@@ -44,7 +44,6 @@ def parse_args():
     parser.add_argument("--e_idx", type=int, default=999999)
     parser.add_argument("--pad_type", default=None, choices=["constant", "reflect"])
     parser.add_argument("--save_root_dir", type=str, default="./sampled_images")
-    parser.add_argument("--save_name", type=str, default="dummy")
 
     parser.add_argument("--strength", type=float, default=1.0)
     parser.add_argument("--no_zero_snr", action="store_true")
@@ -60,7 +59,7 @@ def parse_args():
     parser.add_argument("--mixed_precision", type=str, default="fp16")
 
     args = parser.parse_args()
-    args.save_dir = opj(args.save_root_dir, args.save_name)
+    args.save_dir = args.save_root_dir
     os.makedirs(args.save_dir, exist_ok=True)
     return args
 
@@ -208,6 +207,7 @@ for idx, (pair_type, img_bns, c_bns, full_txts, clothing_txts) in enumerate(zip(
                     category=dataset_config.get("category", None),
                     pad_type=args.pad_type,
                     use_dc_cloth=dataset_config.get("use_dc_cloth", False),
+                    coarse=False,
                 )
                 
                 if config.get("use_interm_cloth_mask", False):
@@ -219,11 +219,12 @@ for idx, (pair_type, img_bns, c_bns, full_txts, clothing_txts) in enumerate(zip(
                         c_bn=c_bn,
                         img_h=args.img_h,
                         img_w=args.img_w,
-                        train_folder_name=dataset_config.train_folder_name_for_interm_cloth_mask,
-                        test_folder_name=dataset_config.test_folder_name_for_interm_cloth_mask,
+                        train_folder_name=dataset_config.get("train_folder_name", None),
+                        test_folder_name=dataset_config.get("test_folder_name", None),
                         category=dataset_config.get("category", None),
                         pad_type=args.pad_type,
                         use_dc_cloth=dataset_config.get("use_dc_cloth", False),
+                        coarse=True,
                     )
                     with torch.autocast("cuda"):
                         interm_cloth_mask = pipeline.get_interm_clothmask(
