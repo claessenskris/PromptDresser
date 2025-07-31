@@ -295,12 +295,4 @@ elif args.skip_unpaired:
     pair_type_lst = ["paired"]
 else:
     pair_type_lst = ["paired", "unpaired"]
-
-if accelerator.is_main_process:
-    for pair_type in pair_type_lst:
-        img_save_dir = opj(args.save_dir, pair_type)
-        gt_dir = "./DATA/zalando-hd-resized/test_fine/image"
-    
-        eval_cmd = f"python evaluation.py --gt_dir {gt_dir} --pred_dir {img_save_dir} &"
-        os.system(eval_cmd)
-    print("Done")
+print("Done")
