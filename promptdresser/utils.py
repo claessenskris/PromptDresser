@@ -137,7 +137,7 @@ def get_inputs(
         root_dir, data_type, pose_type, img_bn, c_bn, img_h, img_w, train_folder_name, test_folder_name, 
         # use_repaint, train_folder_name_for_interm_cloth_mask=None, test_repaint_folder_name=None,
         # return_inversion_latents=False,
-        category=None, pad_type=None, use_dc_cloth=False
+        category=None, pad_type=None, use_dc_cloth=False, coarse=False
 ):
     is_vitonhd = category is None or category == ""
     img_fn = os.path.splitext(img_bn)[0]
@@ -156,7 +156,10 @@ def get_inputs(
         elif pose_type == "densepose": pose = Image.open(opj(root_dir, f"{folder_name}/image-densepose", f"{img_fn}.jpg")).convert("RGB").resize((img_w, img_h))
             
         person = Image.open(opj(root_dir, f"{folder_name}/image", img_bn)).convert("RGB")
-        mask = Image.open(opj(root_dir, f"{folder_name}/agnostic-mask", f"{img_fn}_mask.png")).convert("RGB")
+        if coarse:
+            mask = Image.open(opj(root_dir, f"{folder_name}/agnostic-mask-coarse", f"{img_fn}_mask.png")).convert("RGB")
+        else:
+            mask = Image.open(opj(root_dir, f"{folder_name}/agnostic-mask-fine", f"{img_fn}_mask.png")).convert("RGB")
         if not use_dc_cloth:
             cloth = Image.open(opj(root_dir, f"{folder_name}/cloth", c_bn)).convert("RGB")
         else:
