@@ -148,7 +148,10 @@ def get_inputs(
             folder_name = test_folder_name if test_folder_name is not None else "test"
         
         person = Image.open(opj(root_dir, f"{folder_name}/image", img_bn)).convert("RGB").resize((img_w, img_h))
-        mask = Image.open(opj(root_dir, f"{folder_name}/agnostic-mask", f"{img_fn}_mask.png")).convert("RGB").resize((img_w, img_h))
+        if coarse:
+            mask = Image.open(opj(root_dir, f"{folder_name}/agnostic-mask-coarse", f"{img_fn}_mask.png")).convert("RGB").resize((img_w, img_h))
+        else:
+            mask = Image.open(opj(root_dir, f"{folder_name}/agnostic-mask-fine", f"{img_fn}_mask.png")).convert("RGB").resize((img_w, img_h))
         cloth = Image.open(opj(root_dir, f"{folder_name}/cloth", c_bn)).convert("RGB").resize((img_w, img_h))
 
         if pose_type == "openpose": pose = Image.open(opj(root_dir, f"{folder_name}/dwpose", f"{img_fn}.png")).convert("RGB").resize((img_w, img_h))
